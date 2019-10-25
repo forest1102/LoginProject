@@ -14,7 +14,7 @@ app.use(cors({
   origin: true
 }))
 app.get("/", (request, response) => {
-  response.send("Hello from Express on Firebase with CORS!")
+  response.send("Hello, Phong!")
 })
 app.get("/users", (request, response,next) => {
   users.get()
