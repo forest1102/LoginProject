@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 
 const {db,functions}=require('./firebase_service')
 const users=db.collection('users')
+const posts=db.collection('posts')
 const {verifyToken,getAuthToken}=require('./auth_middleware')
 
 /* Express with CORS */
@@ -64,6 +65,22 @@ app.post('/user',[
     })
 })
 
+app.get("/posts", (request, response,next) => {
+  posts.get()
+    .then(snapshot=>{
+      // const data=snapshot.docs.map(doc=>({id:doc.id,...doc.data()}))
+      const data=snapshot.docs.reduce((acc,cur)=>({
+        ...acc,
+        [cur.id]:cur.data()
+      }),{})
+      console.log(data)
+      response.status(200).json(data)
+    })
+    .catch((err) => {
+      console.log('Error getting documents', err)
+      response.status(400).send(err)
+    })
+})
 
 
 module.exports.api2 = functions.https.onRequest(app)
