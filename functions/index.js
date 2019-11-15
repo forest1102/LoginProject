@@ -28,12 +28,6 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
-app.get("/", (request, response) => {
-	response.send("Hello, Phong!")
-})
-app.get('/hello', (req, res) => {
-	res.send('Hello World. ')
-})
 app.get("/users", (request, response, next) => {
 	users.get()
 		.then(snapshot => {
