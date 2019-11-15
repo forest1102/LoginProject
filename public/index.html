@@ -43,20 +43,46 @@
         }
         // Sign in with email and pass.
         // [START authwithemail]
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          // [START_EXCLUDE]
-          if (errorCode === 'auth/wrong-password') {
-            alert('Wrong password.');
-          } else {
-            alert(errorMessage);
-          }
-          console.log(error);
-          document.getElementById('quickstart-sign-in').disabled = false;
-          // [END_EXCLUDE]
-        });
+        $.ajax({
+          url:'http://localhost:5001/quickstart-1555129014263/us-central1/api2/dummy_token',
+          method:'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+              email,
+              password
+            })
+          })
+          .done((res)=>{
+            console.log(res)
+            
+            firebase.auth().signInWithCustomToken(res.token)
+              .then(user_login=>{
+                console.log('Success!')
+              })
+              .catch(err=>{
+                console.error(err)
+              })
+          })
+          .fail((XMLHttpRequest, textStatus, errorThrown)=>{
+            console.error(errorThrown)
+          })
+          .always(()=>{
+            document.getElementById('quickstart-sign-in').disabled = false;
+          })
+        // firebase.auth().signInWithCustomToken(email, password).catch(function(error) {
+        //   // Handle Errors here.
+        //   var errorCode = error.code;
+        //   var errorMessage = error.message;
+        //   // [START_EXCLUDE]
+        //   if (errorCode === 'auth/wrong-password') {
+        //     alert('Wrong password.');
+        //   } else {
+        //     alert(errorMessage);
+        //   }
+        //   console.log(error);
+        //   document.getElementById('quickstart-sign-in').disabled = false;
+        //   // [END_EXCLUDE]
+        // });
         // [END authwithemail]
       }
       document.getElementById('quickstart-sign-in').disabled = true;
@@ -134,13 +160,10 @@
 
     function setStudentId(){
       var student_id=document.getElementById('student_id').value
-      const url='http://localhost:5001/quickstart-1555129014263/us-central1/api2/user'
+      const url='http://localhost:5001/quickstart-1555129014263/us-central1/api2/account'
       firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
         $.ajax({
           url,
-          type:'POST',
-          data:JSON.stringify({student_id}),
-          contentType: 'application/json',
           beforeSend:function(xhr){
             xhr.setRequestHeader('Authorization','Bearer '+idToken)
           }

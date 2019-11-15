@@ -25,6 +25,7 @@ function verifyToken(req,res,next){
           .verifyIdToken(authToken)
 
         req.authId = userInfo.uid
+        req.user=userInfo
         if(req.authId){
             next()
         }
@@ -42,6 +43,6 @@ function verifyToken(req,res,next){
     })
 }
 module.exports={
-    verifyToken,
-    getAuthToken
+  verifyToken,
+  getAuthToken
 }
